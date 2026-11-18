@@ -38,7 +38,38 @@
             </div>
             
             {{-- TODO 6: Tambahkan dropdown filter Semester dan dropdown Urutkan (Sort) di sini --}}
-            
+            <form action="{{ route('courses.index') }}" method="GET" class="row g-2 align-items-center mb-4">
+    <div class="col-md-4">
+        <input type="text" name="search" class="form-control"
+               placeholder="Cari berdasarkan kode mata kuliah, nama, atau..."
+               value="{{ request('search') }}">
+    </div>
+
+    <div class="col-md-3">
+        <select name="semester" class="form-select">
+            <option value="">Semua Semester</option>
+            @foreach($semesters as $sem)
+                <option value="{{ $sem }}" {{ request('semester') == $sem ? 'selected' : '' }}>
+                    {{ $sem }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <select name="sort" class="form-select">
+            <option value="nama_asc" {{ request('sort') == 'nama_asc' ? 'selected' : '' }}>Urutkan: Nama (A - Z)</option>
+            <option value="nama_desc" {{ request('sort') == 'nama_desc' ? 'selected' : '' }}>Urutkan: Nama (Z - A)</option>
+            <option value="sks_desc" {{ request('sort') == 'sks_desc' ? 'selected' : '' }}>Urutkan: SKS Terbesar</option>
+            <option value="sks_asc" {{ request('sort') == 'sks_asc' ? 'selected' : '' }}>Urutkan: SKS Terkecil</option>
+        </select>
+    </div>
+
+    <div class="col-md-2 d-flex gap-2">
+        <button type="submit" class="btn btn-dark w-100">Filter &amp; Cari</button>
+        <a href="{{ route('courses.index') }}" class="btn btn-outline-secondary">Reset</a>
+    </div>
+</form>
             <button type="submit" class="btn btn-secondary">
                 Filter &amp; Cari
             </button>

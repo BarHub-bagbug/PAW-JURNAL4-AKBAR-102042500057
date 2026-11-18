@@ -4,38 +4,44 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Submission extends Model
 {
     use HasFactory;
 
-    // TODO 2: Tambahkan 'nilai' dan 'catatan_dosen' ke $fillable, serta lengkapi logika status nilai ('Belum Dinilai', 'Lulus' >= 70, 'Perlu Perbaikan')
     protected $fillable = [
         'assignment_id',
         'user_id',
         'jawaban',
         'submitted_at',
+        'nilai',
+        'catatan_dosen',
     ];
 
-    protected $casts = [
-        'nilai' => 'integer',
-        'submitted_at' => 'datetime',
-    ];
-
-    public function assignment(): BelongsTo
+    protected function casts(): array
     {
-        return $this->belongsTo(Assignment::class);
+        return [
+            'submitted_at' => 'datetime',
+        ];
     }
 
-    public function user(): BelongsTo
+    // Accessor Status Kelulusan Nilai
+    public function getStatusKelulusanAttribute(): string
+    {
+        if (is_null($this->nilai)) {
+            return 'Belum Dinilai';
+        }
+
+        return $this->nilai >= 75 ? 'Lulus' : 'Tidak Lulus';
+    }
+
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function getStatusNilaiAttribute(): string
+    public function assignment()
     {
-        // TODO 2: Lengkapi logika status nilai ('Belum Dinilai' jika null, 'Lulus' jika >= 70, selain itu 'Perlu Perbaikan')
-        return '';
+        return $this->belongsTo(Assignment::class);
     }
 }
